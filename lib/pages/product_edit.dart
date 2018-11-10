@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 class ProductEditPage extends StatefulWidget {
   final Function addProduct;
   final Function updateProduct;
-  final Map<String, dynamic> products;
+  final Map<String, dynamic> product;
+  final int productIndex;
 
-  ProductEditPage({this.addProduct, this.products, this.updateProduct});
+  ProductEditPage({this.addProduct, this.product, this.updateProduct, this.productIndex});
 
   @override
   State createState() {
@@ -25,7 +26,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
   Widget _buildTitleTextField() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Product Title'),
-      initialValue: widget.products == null ? '' : widget.products['title'],
+      initialValue: widget.product == null ? '' : widget.product['title'],
       // if nothing is returned no error has been found and form continues
       validator: (String value) {
         if (value.isEmpty || value.length < 5) {
@@ -42,7 +43,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     return TextFormField(
       maxLines: 4,
       decoration: InputDecoration(labelText: 'Product Description'),
-      initialValue: widget.products == null ? '' : widget.products['description'],
+      initialValue: widget.product == null ? '' : widget.product['description'],
       validator: (String value) {
         if (value.isEmpty || value.length < 10) {
           return 'Description is required and should be 10+ characters long';
@@ -58,7 +59,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     return TextFormField(
       keyboardType: TextInputType.number,
       initialValue:
-          widget.products == null ? '' : widget.products['price'].toString(),
+          widget.product == null ? '' : widget.product['price'].toString(),
       decoration: InputDecoration(labelText: 'Product Price'),
       validator: (String value) {
         if (value.isEmpty ||
@@ -80,7 +81,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
       return;
     }
     _formKey.currentState.save();
-    widget.addProduct(_formData);
+    if (widget.product == null) {
+      widget.addProduct(_formData);
+    } else {
+      widget.updateProduct(widget.productIndex, _formData);
+    }
     Navigator.pushReplacementNamed(context, '/');
   }
 
@@ -126,7 +131,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
         ),
       ),
     );
-    return widget.products == null
+    return widget.product == null
         ? pageContent
         : Scaffold(
             appBar: AppBar(

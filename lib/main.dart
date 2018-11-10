@@ -24,21 +24,22 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          brightness: Brightness.light,
-          primarySwatch: Colors.deepOrange,
-          accentColor: Colors.deepPurple,
-          buttonColor: Colors.deepPurple,
-          ),
+        brightness: Brightness.light,
+        primarySwatch: Colors.deepOrange,
+        accentColor: Colors.deepPurple,
+        buttonColor: Colors.deepPurple,
+      ),
 //      home: AuthPage(),
       routes: {
-       '/': (BuildContext context) => ProductsPage(_products),
+        '/': (BuildContext context) => ProductsPage(_products),
         // '/': (BuildContext context) => AuthPage(),
         '/admin': (BuildContext context) =>
-            ProductsAdminPage(_addProduct, _deleteProduct, _products),
+            ProductsAdminPage(_addProduct, _updateProduct, _deleteProduct, _products),
       },
       onGenerateRoute: (RouteSettings settings) {
         print('onGenerateRoute: Called');
-        final List<String> pathElements = settings.name.split('/'); // exmp. '/admin/1' to '/' 'admin' '/' '1'
+        final List<String> pathElements =
+            settings.name.split('/'); // exmp. '/admin/1' to '/' 'admin' '/' '1'
         if (pathElements[0] != '') {
           return null;
         }
@@ -73,6 +74,12 @@ class _MyAppState extends State<MyApp> {
       _products.add(product);
     });
     print(_products);
+  }
+
+  void _updateProduct(int index, Map<String, dynamic> product) {
+    setState(() {
+      _products[index] = product;
+    });
   }
 
   void _deleteProduct(int index) {

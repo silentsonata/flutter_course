@@ -4,8 +4,9 @@ import './product_edit.dart';
 
 class ProductList extends StatelessWidget {
   final List<Map<String, dynamic>> products;
+  final Function updateProduct;
 
-  ProductList(this.products);
+  ProductList(this.products, this.updateProduct);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,11 @@ class ProductList extends StatelessWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (BuildContext context) {
-                    return ProductEditPage(products: products[index]);
+                    return ProductEditPage(
+                      product: products[index],
+                      updateProduct: updateProduct,
+                      productIndex: index,
+                    );
                   },
                 ),
               );
