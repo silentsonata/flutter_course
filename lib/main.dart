@@ -5,7 +5,6 @@ import './pages/products_admin.dart';
 import './pages/products.dart';
 import './pages/product.dart';
 import './pages/auth.dart';
-import './models/product.dart';
 
 void main() {
 //  debugPaintSizeEnabled = true;
@@ -20,7 +19,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<Product> _products = [];
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +34,7 @@ class _MyAppState extends State<MyApp> {
         // '/': (BuildContext context) => ProductsPage(_products),
         '/': (BuildContext context) => AuthPage(),
         '/admin': (BuildContext context) =>
-            ProductsAdminPage(_addProduct, _updateProduct, _deleteProduct, _products),
+            ProductsAdminPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         print('onGenerateRoute: Called');
@@ -52,12 +50,7 @@ class _MyAppState extends State<MyApp> {
           final int index = int.parse(pathElements[2]);
           // Actually calls the new page route and passes all data to the page.
           return MaterialPageRoute<bool>(
-            builder: (BuildContext context) => ProductPage(
-                  _products[index].title,
-                  _products[index].image,
-                  _products[index].description,
-                  _products[index].price,
-                ),
+            builder: (BuildContext context) => ProductPage(null, null, null, null),
           );
         }
 
@@ -66,27 +59,8 @@ class _MyAppState extends State<MyApp> {
       },
       onUnknownRoute: (RouteSettings settings) {
         return MaterialPageRoute(
-            builder: (BuildContext context) => ProductsPage(_products));
+            builder: (BuildContext context) => ProductsPage());
       },
     );
-  }
-
-  void _addProduct(Product product) {
-    setState(() {
-      _products.add(product);
-    });
-    print(_products);
-  }
-
-  void _updateProduct(int index, Product product) {
-    setState(() {
-      _products[index] = product;
-    });
-  }
-
-  void _deleteProduct(int index) {
-    setState(() {
-      _products.removeAt(index);
-    });
   }
 }
