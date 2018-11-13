@@ -5,6 +5,7 @@ import './pages/products_admin.dart';
 import './pages/products.dart';
 import './pages/product.dart';
 import './pages/auth.dart';
+import './models/product.dart';
 
 void main() {
 //  debugPaintSizeEnabled = true;
@@ -19,7 +20,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<Map<String, dynamic>> _products = [];
+  List<Product> _products = [];
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +53,10 @@ class _MyAppState extends State<MyApp> {
           // Actually calls the new page route and passes all data to the page.
           return MaterialPageRoute<bool>(
             builder: (BuildContext context) => ProductPage(
-                  _products[index]['title'],
-                  _products[index]['image'],
-                  _products[index]['description'],
-                  _products[index]['price'],
+                  _products[index].title,
+                  _products[index].image,
+                  _products[index].description,
+                  _products[index].price,
                 ),
           );
         }
@@ -70,14 +71,14 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _addProduct(Map<String, dynamic> product) {
+  void _addProduct(Product product) {
     setState(() {
       _products.add(product);
     });
     print(_products);
   }
 
-  void _updateProduct(int index, Map<String, dynamic> product) {
+  void _updateProduct(int index, Product product) {
     setState(() {
       _products[index] = product;
     });
