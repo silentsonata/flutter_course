@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'dart:async';
 
 import '../widgets/ui_elements/title_default.dart';
+import '../models/product.dart';
+import '../scoped-models/products.dart';
 
 class ProductPage extends StatelessWidget {
-  final String title;
-  final String imageUrl;
-  final String description;
-  final double price;
+  final int productIndex;
 
-  ProductPage(this.title, this.imageUrl, this.description, this.price);
+  ProductPage(this.productIndex);
 
-  Widget _buildTitleRow() {
+  Widget _buildTitleRow(String title, double price) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
@@ -60,25 +60,30 @@ class ProductPage extends StatelessWidget {
         Navigator.pop(context, false);
         return Future.value(false);
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(imageUrl),
-            _buildTitleRow(),
-            Container(
-              margin: EdgeInsets.all(10.0),
-              child: Text(
-                description,
-                style: TextStyle(color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
+      child: ScopedModelDescendant<ProductsModel>(
+        builder: (BuildContext context, Widget child, ProductsModel model) {
+          final Product product = model.products[productIndex];
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(product.title),
             ),
-          ],
-        ),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(product.image),
+                _buildTitleRow(product.title, product.price),
+                Container(
+                  margin: EdgeInsets.all(10.0),
+                  child: Text(
+                    product.description,
+                    style: TextStyle(color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
