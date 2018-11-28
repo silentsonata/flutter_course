@@ -2,6 +2,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../models/product.dart';
 
 class ProductsModel extends Model {
+  // Holds all of our products
   List<Product> _products = [];
   int _selectedProductIndex;
 
@@ -33,6 +34,19 @@ class ProductsModel extends Model {
 
   void deleteProduct() {
     _products.removeAt(_selectedProductIndex);
+    _selectedProductIndex = null;
+  }
+
+  void toggleProductFavoriteStatues() {
+    final bool isCurrentlyFavorite = selectedProduct.isFavoirite;
+    final bool newFavoriteStatues = !isCurrentlyFavorite;
+    final Product updatedProduct = Product(
+        title: selectedProduct.title,
+        description: selectedProduct.description,
+        price: selectedProduct.price,
+        image: selectedProduct.image,
+        isFavoirite: newFavoriteStatues);
+    _products[_selectedProductIndex] = updatedProduct;
     _selectedProductIndex = null;
   }
 
