@@ -32,9 +32,7 @@ class _MyAppState extends State<MyApp> {
           accentColor: Colors.deepPurple,
           buttonColor: Colors.deepPurple,
         ),
-//      home: AuthPage(),
         routes: {
-          // '/': (BuildContext context) => ProductsPage(_products),
           '/': (BuildContext context) => AuthPage(),
           '/admin': (BuildContext context) => ProductsAdminPage(),
         },
