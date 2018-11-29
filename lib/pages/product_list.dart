@@ -56,7 +56,7 @@ class ProductList extends StatelessWidget {
                     leading: CircleAvatar(
                       backgroundImage: AssetImage(model.products[index].image),
                     ),
-                    title: Text(model.products[index].title),
+                    title: Text(model.allProducts[index].title),
                     subtitle:
                         Text('\$${model.products[index].price.toString()}'),
                     trailing: _buildEditButton(context, index, model),
@@ -66,7 +66,7 @@ class ProductList extends StatelessWidget {
               ),
             );
           },
-          itemCount: model.products.length,
+          itemCount: model.allProducts.length,
         );
       },
     );
