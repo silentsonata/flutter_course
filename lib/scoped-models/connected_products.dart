@@ -14,22 +14,31 @@ mixin ConnectedProductsModel on Model {
 
   void addProduct(
       String title, String description, String image, double price) {
-        final Map<String, dynamic> productData = {
-          'title': title,
-          'description': description,
-          'image': 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwizhOHDs4bfAhVyhOAKHaWrAkYQjRx6BAgBEAU&url=https%3A%2F%2Fschrammsflowers.com%2Fproduct%2Fchocolate-candy-basket%2F&psig=AOvVaw3TSveQyYmK3cw3MBiydBns&ust=1544020710265451',
-          'price': price,
-        };
-        http.post('https://flutter-products-44a29.firebaseio.com/products.json', body: json.encode(productData));
-    final Product newProduct = Product(
-        title: title,
-        description: description,
-        image: image,
-        price: price,
-        userEmail: _authenticatedUser.email,
-        userId: _authenticatedUser.id);
-    _products.add(newProduct);
-    notifyListeners();
+    final Map<String, dynamic> productData = {
+      'title': title,
+      'description': description,
+      'image':
+          'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwizhOHDs4bfAhVyhOAKHaWrAkYQjRx6BAgBEAU&url=https%3A%2F%2Fschrammsflowers.com%2Fproduct%2Fchocolate-candy-basket%2F&psig=AOvVaw3TSveQyYmK3cw3MBiydBns&ust=1544020710265451',
+      'price': price,
+      'userEmail': _authenticatedUser.email,
+      'userId': _authenticatedUser.id,
+    };
+    http
+        .post('https://flutter-products-44a29.firebaseio.com/products.json',
+            body: json.encode(productData))
+        .then((http.Response response) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Product newProduct = Product(
+          id: responseData['name'],
+          title: title,
+          description: description,
+          image: image,
+          price: price,
+          userEmail: _authenticatedUser.email,
+          userId: _authenticatedUser.id);
+      _products.add(newProduct);
+      notifyListeners();
+    });
   }
 }
 
@@ -65,7 +74,8 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavorites;
   }
 
-  void updateProduct(String title, String description, String image, double price) {
+  void updateProduct(
+      String title, String description, String image, double price) {
     final Product updatedProduct = Product(
         title: title,
         description: description,
@@ -80,6 +90,34 @@ mixin ProductsModel on ConnectedProductsModel {
   void deleteProduct() {
     _products.removeAt(selectedProductIndex);
     notifyListeners();
+  }
+
+  void fetchProducts() {
+    http
+        .get('https://flutter-products-44a29.firebaseio.com/products.json')
+        .then(
+      (http.Response response) {
+        final List<Product> fetchedProductList = [];
+        final Map<String, dynamic> productListData =
+            json.decode(response.body);
+        productListData.forEach(
+          (String productId, dynamic productData) {
+            final Product product = Product(
+              id: productId,
+              title: productData['title'],
+              description: productData['description'],
+              image: productData['image'],
+              price: productData['price'],
+              userEmail: productData['userEmail'],
+              userId: productData['userId'],
+            );
+            fetchedProductList.add(product);
+          },
+        );
+        _products = fetchedProductList;
+        notifyListeners();
+      },
+    );
   }
 
   void toggleProductFavoriteStatues() {
@@ -111,8 +149,8 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserModel on ConnectedProductsModel {
-
-  void  login(String email, String password) {
-    _authenticatedUser = User(id: '3824234234', email: email, password: password);
+  void login(String email, String password) {
+    _authenticatedUser =
+        User(id: '3824234234', email: email, password: password);
   }
 }
