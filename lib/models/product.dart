@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// Create an object of type Product to be used across the app
+
 class Product {
   final String id;
   final String title;
