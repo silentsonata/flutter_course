@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
         routes: {
           // AuthPage is the default page to load because of the special flag '/'
           '/': (BuildContext context) => AuthPage(),
-          '/products': (BuildContext context) => ProductsPage(model),
+          '/products': (BuildContext context) => ProductsPage(model), // Passes in the model
           '/admin': (BuildContext context) => ProductsAdminPage(),
         },
 
