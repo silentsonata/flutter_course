@@ -14,21 +14,40 @@ class ProductsPage extends StatefulWidget {
 
   // Create State
   @override
-    State<StatefulWidget> createState() {
-      return _ProductsPageState();
-    }
+  State<StatefulWidget> createState() {
+    return _ProductsPageState();
+  }
 }
 
-
-class _ProductsPageState extends State<ProductsPage>{
-  
+class _ProductsPageState extends State<ProductsPage> {
   // This runs when the state is first created before build is executed
   @override
   void initState() {
-      // Gets everything from model???
-      widget.model.fetchProducts();
-      super.initState();
-    }
+    // Gets everything from model???
+    widget.model.fetchProducts();
+    super.initState();
+  }
+
+  // A Widget that will hide content until it is downloaded
+  Widget _buildProductsList() {
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        // Set up a widget to hold the content
+        Widget content = Center(child: Text("No Products Found"));
+        // If there is content and its done loading then show the products
+        if (model.displayedProducts.length > 0 && !model.isLoading) {
+          content = Products();
+
+          // If the content is loading show a progress indicator
+        } else if (model.isLoading) {
+          content = Center(child: CircularProgressIndicator());
+        }
+
+        // Return the result of what content to show
+        return content;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +78,8 @@ class _ProductsPageState extends State<ProductsPage>{
         ],
       ),
       // Body section that will list the products
-      // Call products widget
-      body: Products(),
+      // Call build products widget to either show spinner, no product, or the products
+      body: _buildProductsList(),
     );
   }
 }

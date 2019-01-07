@@ -15,6 +15,8 @@ mixin ConnectedProductsModel on Model {
   User _authenticatedUser;
   // The integer of the selected product for the array list above
   int _selProductIndex;
+  // A bool that tells if page is loading
+  bool _isLoading = false;
 
   // A function that adds a product to the users database
   /*  title: The title of the product
@@ -22,8 +24,11 @@ mixin ConnectedProductsModel on Model {
       image: A Url to the image
       price: The amount for the product
   */
-  void addProduct(
+  Future<Null> addProduct(
       String title, String description, String image, double price) {
+    // Shows loading page
+    _isLoading = true;
+    notifyListeners();
     // Preps a product from the values passed into the function and includes the userEmail and userId
     final Map<String, dynamic> productData = {
       'title': title,
@@ -35,7 +40,7 @@ mixin ConnectedProductsModel on Model {
       'userId': _authenticatedUser.id,
     };
     // Http request to store data to firebase
-    http
+    return http
         .post('https://flutter-products-44a29.firebaseio.com/products.json',
             // Convert the list into json because that is how firebase stores its data
             body: json.encode(productData))
@@ -57,13 +62,15 @@ mixin ConnectedProductsModel on Model {
           userId: _authenticatedUser.id);
       // Add the new product to the product array
       _products.add(newProduct);
+
+      // Will stop showing loading
+      _isLoading = false;
       // notifyListeners is called when the model has changed.
       // Since we added a product the model has changed it must notify all listeners that the change happened.
       notifyListeners();
     });
   }
 }
-
 
 mixin ProductsModel on ConnectedProductsModel {
   // A toggle wether or not to show only favorites
@@ -93,7 +100,6 @@ mixin ProductsModel on ConnectedProductsModel {
     return _selProductIndex;
   }
 
-  
   Product get selectedProduct {
     // If no product is sellected will return null. A better way to do this would just return the selected
     // product without the if statment.
@@ -136,6 +142,9 @@ mixin ProductsModel on ConnectedProductsModel {
 
   // A function that fetches the products from the server
   void fetchProducts() {
+    // Page will show loading
+    _isLoading = true;
+    notifyListeners();
     // http start with the link to the server
     http
         .get('https://flutter-products-44a29.firebaseio.com/products.json')
@@ -145,6 +154,16 @@ mixin ProductsModel on ConnectedProductsModel {
         final List<Product> fetchedProductList = [];
         // Create a map of all the products being fetched from the server
         final Map<String, dynamic> productListData = json.decode(response.body);
+
+        // Check to see if returned null indicating there are no products
+        if (productListData == null) {
+          // Completed loading
+          _isLoading = false;
+          // Notify all listeners in the model
+          notifyListeners();
+          // Return nothing to exit the function
+          return;
+        }
 
         // For each product in the map store to fetchedProductList
         productListData.forEach(
@@ -166,6 +185,9 @@ mixin ProductsModel on ConnectedProductsModel {
         );
         // Stor all fetched products to the main products list
         _products = fetchedProductList;
+
+        // Set page loading to false
+        _isLoading = false;
         // Let em all know something up
         notifyListeners();
       },
@@ -187,7 +209,7 @@ mixin ProductsModel on ConnectedProductsModel {
         userEmail: selectedProduct.userEmail,
         userId: selectedProduct.userId,
         isFavoirite: newFavoriteStatues);
-    
+
     // Apply that updated product to the product list at the selected index
     _products[selectedProductIndex] = updatedProduct;
     // Wake up the cattle
@@ -222,5 +244,12 @@ mixin UserModel on ConnectedProductsModel {
     // Id is static right now but should be updated latter
     _authenticatedUser =
         User(id: '3824234234', email: email, password: password);
+  }
+}
+
+
+mixin UtilityModel on ConnectedProductsModel {
+  bool get isLoading {
+    return _isLoading;
   }
 }

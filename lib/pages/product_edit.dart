@@ -109,16 +109,21 @@ class _ProductEditPageState extends State<ProductEditPage> {
       // Requires a builder
       builder: (BuildContext context, Widget child, MainModel model) {
         // Then returns the actual widget we want which is a button
-        return RaisedButton(
-          // Set the label to 'Save' by giving it a Text widget as a child
-          child: Text('Save'),
-          // Set the color of label
-          textColor: Colors.white,
-          // When the button is pressed, execute _submitForm() function
-          // Pass the model's functions through and also the selected product index
-          onPressed: () => _submitForm(model.addProduct, model.updateProduct,
-              model.selectProduct, model.selectedProductIndex),
-        );
+        return model.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : RaisedButton(
+                // Set the label to 'Save' by giving it a Text widget as a child
+                child: Text('Save'),
+                // Set the color of label
+                textColor: Colors.white,
+                // When the button is pressed, execute _submitForm() function
+                // Pass the model's functions through and also the selected product index
+                onPressed: () => _submitForm(
+                    model.addProduct,
+                    model.updateProduct,
+                    model.selectProduct,
+                    model.selectedProductIndex),
+              );
       },
     );
   }
@@ -197,7 +202,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['description'],
         _formData['image'],
         _formData['price'],
-      );
+      ).then((_) => // Once the data has been sent navigate to the products page
+    Navigator.pushReplacementNamed(context, '/products')
+        .then((_) => setSelectedProduct(null)));
       // If there was a product index that was given, update the current one
     } else {
       updateProduct(
