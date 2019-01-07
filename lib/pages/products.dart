@@ -6,7 +6,7 @@ import '../widgets/products/products.dart';
 import '../widgets/drawer.dart';
 import '../scoped-models/main.dart';
 
-// Create a new stateful widget because view will be updated
+// List of each products cards
 class ProductsPage extends StatefulWidget {
   // Store the model passed in
   final MainModel model;

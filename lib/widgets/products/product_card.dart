@@ -35,25 +35,41 @@ class ProductCard extends StatelessWidget {
     );
   }
 
+  // Widget that builds all the action buttons
   Widget _buildActionButtons(BuildContext context) {
+    // Create a button bar that lets us put multiple buttons in a row
     return ButtonBar(
+      // Set the alignment to center
       alignment: MainAxisAlignment.center,
+      // List the buttons as a array in children
       children: <Widget>[
+        // INFO BUTTON
+        // Icon button that will open the product details
         IconButton(
+          // Sets the icon with an icon from the Icon class
           icon: Icon(Icons.info),
+          // Sets the color of the icon to the accent theme color
           color: Theme.of(context).accentColor,
+          // The action that happens when tapped
           onPressed: () => Navigator.pushNamed<bool>(
                 context,
                 '/product/' + productIndex.toString(),
               ),
         ),
+        // FAVORITE BUTTON
+        // Icon button that will toggle said product as a favorite
+        // Will need to store favorite preference in the model so we need access to it
         ScopedModelDescendant<MainModel>(
           builder: (BuildContext context, Widget child, MainModel model) {
+            // Icon button
             return IconButton(
+              // Checks to see if product is favorite. If so change the icon.
               icon: Icon(model.allProducts[productIndex].isFavoirite
                   ? Icons.favorite
                   : Icons.favorite_border),
+              // Set the icon color
               color: Colors.red,
+              // When pressed, select the product and toggle the favorite status
               onPressed: () {
                 model.selectProduct(productIndex);
                 model.toggleProductFavoriteStatues();
@@ -65,6 +81,7 @@ class ProductCard extends StatelessWidget {
     );
   }
 
+  // Builds the card
   @override
   Widget build(BuildContext context) {
     // Returns a card that shows the product
@@ -75,8 +92,11 @@ class ProductCard extends StatelessWidget {
           Image.network(product.image),
           // Create the text section with the title and price
           _buildTitlePriceRow(),
+          // Static address tag - Will be updated
           AddressTag('Union Square, San Francisco'),
+          // User's email (Not sure why this is would be helpful)
           Text(product.userEmail),
+          // Builds the action buttons widget from above
           _buildActionButtons(context),
         ],
       ),
