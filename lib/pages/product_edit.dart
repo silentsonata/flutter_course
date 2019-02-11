@@ -203,8 +203,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['image'],
         _formData['price'],
       ).then((_) => // Once the data has been sent navigate to the products page
-    Navigator.pushReplacementNamed(context, '/products')
-        .then((_) => setSelectedProduct(null)));
+          Navigator.pushReplacementNamed(context, '/products')
+              .then((_) => setSelectedProduct(null)));
       // If there was a product index that was given, update the current one
     } else {
       updateProduct(
